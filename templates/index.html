@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Text Summarizer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🧠 AI Text Summarizer</h1>
+        <p class="subtitle">Runs fully locally — no API key, no cloud AI calls, no cost.</p>
+
+        <form action="/summarize" method="post" class="summarize-form">
+            <textarea name="text" rows="10" placeholder="Paste an article, essay, or any long text here..." required>{{ text }}</textarea>
+
+            <div class="controls">
+                <label for="num_sentences">Summary length (sentences):</label>
+                <input type="number" id="num_sentences" name="num_sentences" min="1" max="20" value="{{ num_sentences or 3 }}">
+                <button type="submit">Summarize</button>
+            </div>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            <h2>Summary</h2>
+            {% if result.summary %}
+            <p class="summary-text">{{ result.summary }}</p>
+            <div class="stats">
+                <span>{{ result.original_sentences }} → {{ result.summary_sentences }} sentences</span>
+                <span>{{ result.original_words }} → {{ result.summary_words }} words</span>
+            </div>
+            {% else %}
+            <p class="empty">No text to summarize — please paste something above.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        {% if history %}
+        <div class="history">
+            <div class="history-header">
+                <h2>Recent summaries</h2>
+                <form action="/clear-history" method="post">
+                    <button type="submit" class="btn-clear">Clear</button>
+                </form>
+            </div>
+            <ul>
+                {% for item in history %}
+                <li>
+                    <p class="history-summary">{{ item['summary_text'] }}</p>
+                    <span class="history-time">{{ item['created_at'] }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
