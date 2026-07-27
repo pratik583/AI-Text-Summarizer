@@ -12,7 +12,7 @@ app = FastAPI(title="AI Text Summarizer (local, free)")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
+templates.env.cache = None
 
 @app.on_event("startup")
 def on_startup():
