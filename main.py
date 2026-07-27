@@ -12,7 +12,11 @@ app = FastAPI(title="AI Text Summarizer (local, free)")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+# Workaround for a Python 3.14 + Jinja2 bug where the template cache's key
+# generation breaks (TypeError: cannot use 'tuple' as a dict key).
+# See: https://github.com/pallets/jinja/issues/2180
 templates.env.cache = None
+
 
 @app.on_event("startup")
 def on_startup():
@@ -23,8 +27,9 @@ def on_startup():
 def home(request: Request):
     history = get_recent(limit=5)
     return templates.TemplateResponse(
-        "index.html",
-        {"request": request, "result": None, "history": history, "text": ""},
+        request=request,
+        name="index.html",
+        context={"result": None, "history": history, "text": ""},
     )
 
 
@@ -42,9 +47,9 @@ def do_summarize(
 
     history = get_recent(limit=5)
     return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
+        request=request,
+        name="index.html",
+        context={
             "result": result,
             "history": history,
             "text": text,
