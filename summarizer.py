@@ -22,8 +22,7 @@ def split_sentences(text: str) -> list[str]:
 def summarize(text: str, num_sentences: int = 3) -> dict:
     """
     Extractive summarization using TF-IDF + cosine similarity + TextRank
-    (PageRank over a sentence-similarity graph). Fully local, no API calls,
-    no large model downloads.
+    (PageRank over a sentence-similarity graph).
 
     Returns a dict with the summary, original sentence count, and stats.
     """
